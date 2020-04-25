@@ -1,33 +1,35 @@
-;; Converts N26 2018 CSV-file format (as exported by N26 banking) to
-;; an KMyMoney importable format.
-;;
-;; Version 0.1.0
-;;
-;; Requires Babashka -- https://github.com/borkdude/babashka
-;; Requires spartan.spec -- https://github.com/borkdude/spartan.spec
-;;
-;; See deps.edn and n26-csv bash script.
-;;
-;; Start nrepl: `bb -cp "$(clojure -Spath)" --nrepl-server`
-;; Emacs: `cider-connect-clj` with reported port and `cider-repl-set-ns`.
-;;
-;; DISCLAIMER: THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-;; CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-;; INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-;; MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-;; DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
-;; BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-;; OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-;; PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-;; PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
-;; OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-;; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
-;; USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
-;; DAMAGE.
-;;
-;; Twitter: @maridonkers | Google+: +MariDonkers | GitHub: maridonkers
-;;
 (ns n26.csv
+  "Converts N26 2018 CSV-file format (as exported by N26 banking) to a
+  KMyMoney importable format.
+
+  Version 0.1.0
+
+  Requires Babashka -- https://github.com/borkdude/babashka
+  Requires spartan.spec -- https://github.com/borkdude/spartan.spec
+
+  See deps.edn and n26-csv bash script.
+
+  DEVELOPMENT
+  ===========
+  Start nrepl: `bb -cp \"$(clojure -Spath)\" --nrepl-server`
+  Emacs: `cider-connect-clj` with reported port and `cider-repl-set-ns`.
+
+  DISCLAIMER: THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+  CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+  BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+  OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+  DAMAGE.
+
+  Twitter: @maridonkers | Google+: +MariDonkers | GitHub: maridonkers"
+  
   (:require [clojure.string :as str]
             [spartan.spec :as s]
             [clojure.java.io :as io]))
@@ -39,7 +41,7 @@
     (if (empty? ext) "" ext)))
 
 (defn basename
-  "Gets basename for path with file extension."
+  "Gets basename for path with specified file extension."
   [path ext]
   (let [base (if (empty? ext)
                path
@@ -251,17 +253,16 @@
 ;; ----
 ;; MAIN
 
-(defn main [args]
-  (let [fnames args]
-    (doseq [fname fnames]
-      (println (str fname ":"))
-      (let [lines (slurp fname :encoding "utf8")
-            accounts (distinct (convert fname lines))]
+(defn main [fnames]
+  (doseq [fname fnames]
+    (println (str fname ":"))
+    (let [lines (slurp fname :encoding "utf8")
+          accounts (distinct (convert fname lines))]
 
-        (println (str "\t"
-                      (->> accounts
-                           (interpose "\n")
-                           (apply str))))))))
+      (println (str "\t"
+                    (->> accounts
+                         (interpose "\n")
+                         (apply str)))))))
 
 (if (empty? *command-line-args*)
   (println "Usage: n26-csv <filename> {<filename> ...}")
