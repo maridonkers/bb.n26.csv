@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# Executes Babashka file wtih deps.edn
+#
+# Twitter: @maridonkers | Google+: +MariDonkers | GitHub: maridonkers
+#
+EP="`dirname $0`"
+CP=`( cd "${EP}" ; clojure -Spath )`
+bb -cp "${CP}" "$0.clj" $*
